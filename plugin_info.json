@@ -1,0 +1,10 @@
+{
+  "name": "Google Gemini",
+  "version": "1.0.0",
+  "description": "Google Gemini LLM integration with streaming support",
+  "services": [
+    "stream_chat",
+    "format_image_message",
+    "get_image_dimensions"
+  ]
+}
