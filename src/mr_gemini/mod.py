@@ -41,7 +41,7 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
 
     except Exception as e:
         print('Gemini (OpenAI mode) error:', e)
-        raise
+        #raise
 
 @service()
 async def format_image_message(pil_image, context=None):
