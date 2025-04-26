@@ -16,8 +16,8 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
     try:
         print("gemini stream_chat (OpenAI compatible mode)")
         
-        # Use env model or default
-        model_name = os.environ.get("DEFAULT_LLM_MODEL", "gemini-1.5-flash")
+        if model_name is None:
+            model_name = os.environ.get("DEFAULT_LLM_MODEL", "gemini-1.5-flash")
         
         # Create streaming response using OpenAI compatibility layer
         stream = await client.chat.completions.create(
