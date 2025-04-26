@@ -3,8 +3,8 @@ import os
 import base64
 from io import BytesIO
 from openai import AsyncOpenAI
+from lib.utils.debug import debug_box
 
-# Configure OpenAI client to use Gemini's API
 client = AsyncOpenAI(
     api_key=os.environ.get("GOOGLE_API_KEY"),
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -70,6 +70,7 @@ async def get_image_dimensions(context=None):
 async def get_service_models(context=None):
     """Get available models for the service"""
     try:
+        debug_box("Gemini models:")
         all_models = await client.models.list()
         print(all_models)
         ids = []
