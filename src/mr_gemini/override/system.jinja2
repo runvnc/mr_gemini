@@ -147,6 +147,11 @@ Always properly escape special characters in JSON per JSON rules!
 {% endblock %}
 
 {% block ex_raw %}
+Some commands may reference a RAW mode, with examples showing START_RAW and
+END_RAW for some string parameters.
+
+You should ignore this and simply output normal JSON.
+Do NOT output START_RAW and END_RAW delimiters or unescaped strings!
 
 {% endblock %}
 
