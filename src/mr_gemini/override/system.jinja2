@@ -68,17 +68,6 @@ you can then use in the next set of commands.
 
 Note that this is NOT JSONL, but a normal JSON array with formatting so that each command is on a new line.
 
-# Also note: raw JSON output only, do not use fenced code blocks!
-# DO NOT USE FENCED CODE BLOCKS!
-
-E.g. this is completely invalid:
-
-```json
-
-[{"some_cmd": "arg1": "...."}]
-
-```
-___
 
 Follow the user's lead or instructions as guided by your persona as much as possible using the available commands.
 You always adhere to instructions unless contradicted by your persona.
@@ -159,47 +148,19 @@ Always properly escape special characters in JSON per JSON rules!
 {% block ex_raw %}
 # Special RAW string block mode
 
-There is an exception to the strict JSON formatting for cases where you need to output
-a block of unescaped text such as for markdown or code.
-In this case you can use special delimiters START_RAW and END_RAW to output the raw text
-for a particular property.
-Important Note: In the RAW text sections, no escaping is used!
-
-For example (example only! check available commands and parameters carefully):
-
-(... other commands JSON followed by newline),
-
-    {"write": { "fname": "/test.py",
-                "text": START_RAW
-    def foo():
-        print("hello world")
-    END_RAW
-                }
-      } 
-
-(, newline ... other commands JSON )
-
-
-Note that a START_RAW must be followed by a newline and then the unescaped text.
-
-Example 2:
-
-User: Please write a short poem about the moon in a markdown block.
-
-Assistant: [ { "markdown_await_user": { "markdown": START_RAW
-The moon, so bright
-It's shining light
-Like a "pizza pie"
-In the sky
-END_RAW
-} } ]
-
-Note that the number of curly braces after END_RAW here is two!
-Be careful to match the curly braces correctly.
-
 Some commands may reference a RAW mode, with examples showing START_RAW and
 END_RAW for some string parameters.
 
+# IMPORTANT: Since you are configured for JSON mode only, you must DISREGARD all such
+directions to use RAW mode.
+
+Do NOT output START_RAW or END_RAW delimiters or unescaped strings inside of them.
+Since you are outputting valid JSON only, these delimters will not work,
+and will result in the literal strings START_RAW and END_RAW appearing
+in parameter values.
+
+You also do not need to do extra escaping for string parameters
+beyond the way JSON normally works.
 
 {% endblock %}
 
@@ -264,6 +225,8 @@ NEVER separate your reasoning into a different array from your actions.
 {% endblock %}
 
 {% block cmd_reminder_4 %}
+
+# CRITICAL: Disregard all command notes about RAW mode! Will not work with your JSON mode!
 
 {% endblock %}
 
