@@ -14,7 +14,7 @@ client = AsyncOpenAI(
 
 @service()
 async def stream_chat(model, messages=[], context=None, num_ctx=200000, 
-                     temperature=0.01, max_tokens=3000, num_gpu_layers=0):
+                     temperature=0.01, max_tokens=15000, num_gpu_layers=0):
     try:
         print("gemini stream_chat (OpenAI compatible mode)")
         
