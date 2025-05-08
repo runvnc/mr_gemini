@@ -6,8 +6,7 @@ from io import BytesIO
 from openai import AsyncOpenAI
 from lib.utils.debug import debug_box
 
-# Import the backoff manager
-from xfiles.systests.backoff import ExponentialBackoff
+from lib.utils.backoff import ExponentialBackoff
 
 client = AsyncOpenAI(
     api_key=os.environ.get("GOOGLE_API_KEY"),
