@@ -35,14 +35,21 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
         )
 
         print("Opened stream with model:", model_name)
+        for chunk in original_stream:  # async for
+            if os.environ.get('AH_DEBUG') == 'True':
+                print('\033[93m' + str(chunk) + '\033[0m', end='')
+                print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
+                print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='')
+            yield chunk.choices[0].delta.content or ""
+
         
-        async def content_stream(original_stream):
-            for chunk in original_stream:  # async for
-                if os.environ.get('AH_DEBUG') == 'True':
-                    print('\033[93m' + str(chunk) + '\033[0m', end='')
-                    print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
-                    print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='')
-                yield chunk.choices[0].delta.content or ""
+        #async def content_stream(original_stream):
+        #    for chunk in original_stream:  # async for
+        #        if os.environ.get('AH_DEBUG') == 'True':
+        #            print('\033[93m' + str(chunk) + '\033[0m', end='')
+        #            print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
+        #            print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='')
+        #        yield chunk.choices[0].delta.content or ""
 
         return content_stream(stream)
 
