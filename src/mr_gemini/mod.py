@@ -22,7 +22,7 @@ MAX_RETRIES = 3
 
 @service()
 async def stream_chat(model, messages=[], context=None, num_ctx=200000, 
-                     temperature=0.01, max_tokens=15000, num_gpu_layers=0):
+                     temperature=0.01, max_tokens=32000, num_gpu_layers=0):
     if model is None:
         model_name = os.environ.get("DEFAULT_LLM_MODEL", "gemini-1.5-flash")
     else:
