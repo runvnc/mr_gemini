@@ -5,15 +5,11 @@ from io import BytesIO
 from openai import AsyncOpenAI
 from lib.utils.debug import debug_box
 
-#client = AsyncOpenAI(
-#    api_key=os.environ.get("GOOGLE_API_KEY"),
-#    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-#)
-
-client = OpenAI(
+client = AsyncOpenAI(
     api_key=os.environ.get("GOOGLE_API_KEY"),
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
+
 
 
 @service()
