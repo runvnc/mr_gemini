@@ -43,10 +43,8 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             stream = await client.chat.completions.create(
                 model=model_name,
                 messages=messages,
-                reasoning_effort=\"none\", 
-                response_format= { \"type\": \"json_object\" }, 
-                # reasoning_effort="none", # This might not be standard OpenAI, check Gemini docs if needed
-                # response_format= { "type": "json_object" }, # This is for non-streaming JSON mode
+                reasoning_effort="none", 
+                response_format= { "type": "json_object" }, 
                 stream=True,
                 temperature=temperature,
                 max_tokens=max_tokens
