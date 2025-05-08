@@ -25,7 +25,7 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
         print(f"Model: {model_name}")
 
         # Create streaming response using OpenAI compatibility layer
-        stream = await client.chat.completions.create(
+        stream = client.chat.completions.create(
             model=model_name,
             messages=messages,
             #response_format= { "type": "json_object" },
