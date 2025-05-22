@@ -54,17 +54,45 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             gemini_backoff_manager.record_success(model_name)
            
             async def content_stream(original_stream):
-                async for chunk in original_stream:
-                    if os.environ.get('AH_DEBUG') == 'True':
-                        # print('\033[93m' + str(chunk) + '\033[0m', end='') # Full chunk
-                        # print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='') # Delta object
-                        if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
-                            print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
-                    yield chunk.choices[0].delta.content or ""
+                try:
+                    async for chunk in original_stream:
+                        if os.environ.get('AH_DEBUG') == 'True':
+                            # print('\033[93m' + str(chunk) + '\033[0m', end='') # Full chunk
+                            # print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='') # Delta object
+                            if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                                print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
+                        yield chunk.choices[0].delta.content or ""
+                except Exception as e:
+                    error_message = str(e).lower()
+                    print(e)
+                    is_rate_limit_error = (
+                        "limit" in error_message or 
+                        "overloaded" in error_message or 
+                        "rate" in error_message or 
+                        "quota" in error_message or 
+                        "429" in error_message # HTTP 429 Too Many Requests
+                    )
+
+                    if is_rate_limit_error:
+                        gemini_backoff_manager.record_failure(model_name)
+                        print(f"Gemini (OpenAI mode) rate limit error for '{model_name}' on attempt {attempt_num + 1}/{MAX_RETRIES + 1}: {e}")
+                        if attempt_num < MAX_RETRIES:
+                            next_wait = gemini_backoff_manager.get_wait_time(model_name)
+                            print(f"Will retry after ~{next_wait:.2f} seconds.")
+                            continue # Go to the next iteration of the loop to retry
+                        else:
+                            print(f"Max retries ({MAX_RETRIES + 1}) reached for '{model_name}'. Raising final error.")
+                            raise e # Max retries exceeded, raise the last error
+                    else:
+                        # Not a recognized rate limit error, raise immediately
+                        print(f"Gemini (OpenAI mode) non-rate-limit error for '{model_name}': {e}")
+                        raise e
+
             return content_stream(stream)
 
         except Exception as e:
             error_message = str(e).lower()
+            print(e)
             is_rate_limit_error = (
                 "limit" in error_message or 
                 "overloaded" in error_message or 
