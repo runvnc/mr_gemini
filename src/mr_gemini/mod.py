@@ -54,14 +54,13 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             gemini_backoff_manager.record_success(model_name)
            
             async def content_stream(original_stream):
-                try:
-                    async for chunk in original_stream:
-                        if os.environ.get('AH_DEBUG') == 'True':
-                            # print('\033[93m' + str(chunk) + '\033[0m', end='') # Full chunk
-                            # print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='') # Delta object
-                            if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
-                                print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
-                        yield chunk.choices[0].delta.content or ""
+                async for chunk in original_stream:
+                    if os.environ.get('AH_DEBUG') == 'True':
+                        # print('\033[93m' + str(chunk) + '\033[0m', end='') # Full chunk
+                        # print('\033[92m' + str(chunk.choices[0].delta) + '\033[0m', end='') # Delta object
+                        if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                            print('\033[92m' + str(chunk.choices[0].delta.content) + '\033[0m', end='')
+                    yield chunk.choices[0].delta.content or ""
             return content_stream(stream)
 
         except Exception as e:
