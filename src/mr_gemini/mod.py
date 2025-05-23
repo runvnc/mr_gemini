@@ -13,12 +13,10 @@ client = AsyncOpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-
-
 # Initialize a global backoff manager for Gemini services
 # You might want to make these parameters configurable via environment variables or a config file
-gemini_backoff_manager = ExponentialBackoff(initial_delay=2.0, max_delay=120.0, factor=2, jitter=True)
-MAX_RETRIES = 3
+gemini_backoff_manager = ExponentialBackoff(initial_delay=2.0, max_delay=30.0, factor=2, jitter=True)
+MAX_RETRIES = 6
 
 @service()
 async def stream_chat(model, messages=[], context=None, num_ctx=200000, 
