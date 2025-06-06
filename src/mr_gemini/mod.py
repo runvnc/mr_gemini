@@ -41,12 +41,11 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             stream = await client.chat.completions.create(
                 model=model_name,
                 messages=messages,
-                reasoning_effort="none", 
+                reasoning_effort="low", 
                 response_format= { "type": "json_object" }, 
                 stream=True,
                 temperature=temperature,
-                max_tokens=max_tokens,
-                thinking_budget=8000
+                max_tokens=max_tokens
             )
             print(f"Opened stream with model: {model_name} (Attempt {attempt_num + 1})")
             
