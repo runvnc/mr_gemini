@@ -40,7 +40,7 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             kwargs = {
                 "model": model_name,
                 "messages": messages,
-                "reasoning_effort": "low",
+                #"reasoning_effort": "low",
                 "stream": True,
                 "temperature": temperature,
                 "max_tokens": max_tokens
