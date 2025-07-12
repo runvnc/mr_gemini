@@ -20,7 +20,7 @@ MAX_RETRIES = 6
 
 @service()
 async def stream_chat(model, messages=[], context=None, num_ctx=200000, 
-                     temperature=0.01, max_tokens=32000, num_gpu_layers=0):
+                     temperature=0.01, max_tokens=32000, num_gpu_layers=0, json=True):
     max_tokens = 32000
     if model is None:
         model_name = os.environ.get("DEFAULT_LLM_MODEL", "gemini-1.5-flash")
@@ -36,17 +36,23 @@ async def stream_chat(model, messages=[], context=None, num_ctx=200000,
             if wait_time > 0:
                 print(f"Gemini model '{model_name}' is in backoff. Waiting for {wait_time:.2f} seconds before attempt {attempt_num + 1}.")
                 await asyncio.sleep(wait_time)
+            # Build kwargs for the API call
+            kwargs = {
+                "model": model_name,
+                "messages": messages,
+                "reasoning_effort": "low",
+                "stream": True,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            }
+            
 
+            if json:
+                kwargs["response_format"] = {"type": "json_object"}
+            
             # Create streaming response using OpenAI compatibility layer
-            stream = await client.chat.completions.create(
-                model=model_name,
-                messages=messages,
-                reasoning_effort="low", 
-                response_format= { "type": "json_object" }, 
-                stream=True,
-                temperature=temperature,
-                max_tokens=max_tokens
-            )
+            stream = await client.chat.completions.create(**kwargs)
+            print(f"Opened stream with model: {model_name} (Attempt {attempt_num + 1})")
             print(f"Opened stream with model: {model_name} (Attempt {attempt_num + 1})")
             
             # If successful, record success and prepare the content stream
